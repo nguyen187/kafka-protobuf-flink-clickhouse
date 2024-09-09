@@ -1,14 +1,17 @@
 package myflink.util;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.flink.streaming.api.functions.source.ParallelSourceFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -24,8 +27,28 @@ public class ConfigProperty {
 
     public static final PropertiesConfiguration PROPERTIES = new PropertiesConfiguration();
     public static ConfigProperty instance;
-    public static final String KAFKA_CONFIG_FILE = "kafka.properties";
+    public static final String KAFKA_CONFIG_FILE = "./config/kafka.properties";
+    private PropertiesConfiguration properties = new PropertiesConfiguration();
 
+    private ConfigProperty() {
+        try (InputStream inputStream = Files.newInputStream(Paths.get(KAFKA_CONFIG_FILE))){
+            properties.setDelimiterParsingDisabled(true);
+            properties.load(inputStream);
+            final Iterator<String> keysIter = properties.getKeys();
+            while (keysIter.hasNext()) {
+                String key = keysIter.next();
+                System.out.println(key + "=" + properties.getString(key));
+            }
+        } catch (IOException | ConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public String getConfigString(String key) {
+        return properties.containsKey(key) ? properties.getString(key) : null;
+    }
+    public Integer getConfigInt(String key) {
+        return properties.containsKey(key) ? Integer.valueOf(properties.getString(key)) : null;
+    }
     public static ConfigProperty getInstance() {
         if (instance == null) {
             synchronized (ConfigProperty.class) {
