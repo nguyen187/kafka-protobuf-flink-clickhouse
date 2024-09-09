@@ -5,6 +5,8 @@
 
 package myflink.message;
 
+import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
+
 public final class ExchangeProtoMessage {
   private ExchangeProtoMessage() {}
   static {
@@ -228,21 +230,15 @@ public final class ExchangeProtoMessage {
         getDpiIpBytes();
 
     /**
-     * <code>required string size = 13;</code>
+     * <code>required double size = 13;</code>
      * @return Whether the size field is set.
      */
     boolean hasSize();
     /**
-     * <code>required string size = 13;</code>
+     * <code>required double size = 13;</code>
      * @return The size.
      */
-    java.lang.String getSize();
-    /**
-     * <code>required string size = 13;</code>
-     * @return The bytes for size.
-     */
-    com.google.protobuf.ByteString
-        getSizeBytes();
+    double getSize();
   }
   /**
    * Protobuf type {@code exchange_message_def.ProtMessage}
@@ -277,7 +273,12 @@ public final class ExchangeProtoMessage {
       userLocation_ = "";
       bearerContext_ = "";
       dpiIp_ = "";
-      size_ = "";
+    }
+
+    public ProtMessage(String id, String end  , double size  ) {
+      this.sourceIp_ = id;
+      this.timestamp_ = end;
+      this.size_ = size;
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -853,10 +854,9 @@ public final class ExchangeProtoMessage {
     }
 
     public static final int SIZE_FIELD_NUMBER = 13;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object size_ = "";
+    private double size_ = 0D;
     /**
-     * <code>required string size = 13;</code>
+     * <code>required double size = 13;</code>
      * @return Whether the size field is set.
      */
     @java.lang.Override
@@ -864,41 +864,12 @@ public final class ExchangeProtoMessage {
       return ((bitField0_ & 0x00001000) != 0);
     }
     /**
-     * <code>required string size = 13;</code>
+     * <code>required double size = 13;</code>
      * @return The size.
      */
     @java.lang.Override
-    public java.lang.String getSize() {
-      java.lang.Object ref = size_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          size_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string size = 13;</code>
-     * @return The bytes for size.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getSizeBytes() {
-      java.lang.Object ref = size_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        size_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public double getSize() {
+      return size_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -976,7 +947,7 @@ public final class ExchangeProtoMessage {
         com.google.protobuf.GeneratedMessage.writeString(output, 12, dpiIp_);
       }
       if (((bitField0_ & 0x00001000) != 0)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 13, size_);
+        output.writeDouble(13, size_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1025,7 +996,8 @@ public final class ExchangeProtoMessage {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(12, dpiIp_);
       }
       if (((bitField0_ & 0x00001000) != 0)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(13, size_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(13, size_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1104,8 +1076,9 @@ public final class ExchangeProtoMessage {
       }
       if (hasSize() != other.hasSize()) return false;
       if (hasSize()) {
-        if (!getSize()
-            .equals(other.getSize())) return false;
+        if (java.lang.Double.doubleToLongBits(getSize())
+            != java.lang.Double.doubleToLongBits(
+                other.getSize())) return false;
       }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
@@ -1168,7 +1141,8 @@ public final class ExchangeProtoMessage {
       }
       if (hasSize()) {
         hash = (37 * hash) + SIZE_FIELD_NUMBER;
-        hash = (53 * hash) + getSize().hashCode();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getSize()));
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -1313,7 +1287,7 @@ public final class ExchangeProtoMessage {
         userLocation_ = "";
         bearerContext_ = "";
         dpiIp_ = "";
-        size_ = "";
+        size_ = 0D;
         return this;
       }
 
@@ -1474,9 +1448,7 @@ public final class ExchangeProtoMessage {
           onChanged();
         }
         if (other.hasSize()) {
-          size_ = other.size_;
-          bitField0_ |= 0x00001000;
-          onChanged();
+          setSize(other.getSize());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -1582,11 +1554,11 @@ public final class ExchangeProtoMessage {
                 bitField0_ |= 0x00000800;
                 break;
               } // case 98
-              case 106: {
-                size_ = input.readBytes();
+              case 105: {
+                size_ = input.readDouble();
                 bitField0_ |= 0x00001000;
                 break;
-              } // case 106
+              } // case 105
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2524,82 +2496,42 @@ public final class ExchangeProtoMessage {
         return this;
       }
 
-      private java.lang.Object size_ = "";
+      private double size_ ;
       /**
-       * <code>required string size = 13;</code>
+       * <code>required double size = 13;</code>
        * @return Whether the size field is set.
        */
+      @java.lang.Override
       public boolean hasSize() {
         return ((bitField0_ & 0x00001000) != 0);
       }
       /**
-       * <code>required string size = 13;</code>
+       * <code>required double size = 13;</code>
        * @return The size.
        */
-      public java.lang.String getSize() {
-        java.lang.Object ref = size_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            size_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      @java.lang.Override
+      public double getSize() {
+        return size_;
       }
       /**
-       * <code>required string size = 13;</code>
-       * @return The bytes for size.
-       */
-      public com.google.protobuf.ByteString
-          getSizeBytes() {
-        java.lang.Object ref = size_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          size_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string size = 13;</code>
+       * <code>required double size = 13;</code>
        * @param value The size to set.
        * @return This builder for chaining.
        */
-      public Builder setSize(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+      public Builder setSize(double value) {
+
         size_ = value;
         bitField0_ |= 0x00001000;
         onChanged();
         return this;
       }
       /**
-       * <code>required string size = 13;</code>
+       * <code>required double size = 13;</code>
        * @return This builder for chaining.
        */
       public Builder clearSize() {
-        size_ = getDefaultInstance().getSize();
         bitField0_ = (bitField0_ & ~0x00001000);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string size = 13;</code>
-       * @param value The bytes for size to set.
-       * @return This builder for chaining.
-       */
-      public Builder setSizeBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        size_ = value;
-        bitField0_ |= 0x00001000;
+        size_ = 0D;
         onChanged();
         return this;
       }
@@ -2676,7 +2608,7 @@ public final class ExchangeProtoMessage {
       "ber\030\005 \002(\005\022\014\n\004imsi\030\006 \001(\t\022\016\n\006msisdn\030\007 \001(\t\022" +
       "\014\n\004teid\030\010 \001(\t\022\r\n\005cause\030\t \001(\t\022\025\n\ruser_loc" +
       "ation\030\n \001(\t\022\026\n\016bearer_context\030\013 \001(\t\022\016\n\006d" +
-      "pi_ip\030\014 \001(\t\022\014\n\004size\030\r \002(\tB)\n\017myflink.mes" +
+      "pi_ip\030\014 \001(\t\022\014\n\004size\030\r \002(\001B)\n\017myflink.mes" +
       "sageB\024ExchangeProtoMessageH\001"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor

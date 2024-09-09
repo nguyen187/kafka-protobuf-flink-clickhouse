@@ -1,0 +1,38 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="VulnerableLibrariesLocal" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="isIgnoringEnabled" value="true" />
+      <option name="ignoredModules">
+        <list>
+          <option value="my-flink-project-java-1.11.3" />
+          <option value="my-flink-project-java-1.11.3" />
+          <option value="my-flink-project-java-1.11.3" />
+          <option value="my-flink-project-java-1.11.3" />
+          <option value="my-flink-project-java-1.11.3" />
+          <option value="my-flink-project-java-1.11.3" />
+        </list>
+      </option>
+      <option name="ignoredPackages">
+        <list>
+          <option value="commons-io:commons-io:2.4" />
+          <option value="commons-collections:commons-collections:3.2.2" />
+          <option value="org.apache.commons:commons-compress:1.20" />
+          <option value="com.fasterxml.jackson.core:jackson-databind:2.10.5.1" />
+          <option value="io.netty:netty-codec:4.1.48.Final" />
+          <option value="com.clickhouse:clickhouse-client:0.3.2" />
+        </list>
+      </option>
+      <option name="ignoredReasons">
+        <list>
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

@@ -18,48 +18,136 @@
 
 package myflink;
 
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import myflink.model.ProtMessageDeserializer;
+import myflink.util.ConfigProperty;
 
-/**
- * Skeleton for a Flink Streaming Job.
- *
- * <p>For a tutorial how to write a Flink streaming application, check the
- * tutorials and examples on the <a href="https://flink.apache.org/docs/stable/">Flink Website</a>.
- *
- * <p>To package your application into a JAR file for execution, run
- * 'mvn clean package' on the command line.
- *
- * <p>If you change the name of the main class (with the public static void main(String[] args))
- * method, change the respective entry in the POM.xml file (simply search for 'mainClass').
- */
+import myflink.util.SumIpMessage;
+import myflink.util.TimeUtils;
+import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.streaming.api.TimeCharacteristic;
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.sink.SinkFunction;
+import org.apache.flink.streaming.api.functions.windowing.WindowFunction;
+import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
+import org.apache.flink.util.Collector;
+import org.apache.kafka.common.serialization.IntegerDeserializer;
+import myflink.message.ExchangeProtoMessage.ProtMessage;
+
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Connection;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Properties;
+import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
+import static org.apache.flink.api.common.eventtime.WatermarkStrategy.forBoundedOutOfOrderness;
+
 public class StreamingJob {
 
 	public static void main(String[] args) throws Exception {
-		// set up the streaming execution environment
+
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+		env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
+		env.getConfig().setAutoWatermarkInterval(100L);
 
+        final ConfigProperty configProperty = ConfigProperty.getInstance();
+		final String brokers = configProperty.getConfigString(ConfigProperty.KAFKA_BROKER_LIST);
+		final String topic = configProperty.getConfigString(ConfigProperty.GTPV2_S11_TOPIC);
+		final String groupId = configProperty.getConfigString(ConfigProperty.GROUP_ID);
 
-		/*
-		 * Here, you can start creating your execution plan for Flink.
-		 *
-		 * Start with getting some data from the environment, like
-		 * 	env.readTextFile(textPath);
-		 *
-		 * then, transform the resulting DataStream<String> using operations
-		 * like
-		 * 	.filter()
-		 * 	.flatMap()
-		 * 	.join()
-		 * 	.coGroup()
-		 *
-		 * and many more.
-		 * Have a look at the programming guide for the Java API:
-		 *
-		 * https://flink.apache.org/docs/latest/apis/streaming/index.html
-		 *
-		 */
-		System.out.println("AAAAAAAAAAAA");
-		// execute program
-//		env.execute("Flink Streaming Java API Skeleton");
+		Properties properties = new Properties();
+		properties.setProperty("bootstrap.servers", brokers);
+		properties.setProperty("group.id", groupId);
+
+		FlinkKafkaConsumer<ProtMessage> consumer = new FlinkKafkaConsumer<>(
+				topic,
+				new ProtMessageDeserializer(),
+				properties
+		);
+
+		DataStream<ProtMessage> stream = env.addSource(consumer).assignTimestampsAndWatermarks(WatermarkStrategy
+				.<ProtMessage>forBoundedOutOfOrderness(Duration.ofSeconds(5))
+				.withTimestampAssigner((event, timestamp) ->
+				TimeUtils.parseTimestamp(event.getTimestamp())
+		));
+
+		DataStream<SumIpMessage> sumSizeMessageIp = stream
+				.map(new MapFunction<ProtMessage,ProtMessage>() {
+					@Override
+					public ProtMessage map(ProtMessage r) {
+						String[] parts = r.getSourceIp().split("\\.");
+						String newSourceIp = parts[0] + "." + parts[1];
+						return new ProtMessage(newSourceIp,r.getTimestamp(),r.getSize());
+					}
+				})
+				.keyBy(ProtMessage::getSourceIp)
+				.timeWindow(Time.seconds(10))
+				.apply(new SumSizeMessage());
+
+		System.out.println(sumSizeMessageIp);
+		sumSizeMessageIp.addSink(new ClickHouseSink());
+		env.execute("Flink Streaming Java API Skeleton");
 	}
+	public static class SumSizeMessage implements WindowFunction<ProtMessage, SumIpMessage, String, TimeWindow> {
+		@Override
+		public 	void apply(String Id, TimeWindow window, Iterable<ProtMessage> vals, Collector<SumIpMessage> out) {
+			int cnt = 0;
+			double sum = 0.0;
+			for (ProtMessage r : vals) {
+				cnt++;
+				sum += r.getSize();
+			}
+			Instant windowEndInstant = Instant.ofEpochMilli(window.getEnd());
+			String windowEndTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+					.withZone(ZoneId.systemDefault())
+					.format(windowEndInstant);
+			SumIpMessage a = new SumIpMessage(Id, windowEndTime, sum);
+            out.collect(new SumIpMessage(Id, windowEndTime, sum));
+        }
+	}
+	public static class ClickHouseSink extends RichSinkFunction<SumIpMessage> {
+		private transient Connection connection;
+		private transient PreparedStatement statement;
+
+		@Override
+		public void open(Configuration parameters) throws Exception {
+			String url = "jdbc:clickhouse://localhost:8123/default";
+
+            Properties properties = new Properties();
+            properties.setProperty("user", "default");
+            properties.setProperty("password", "default");
+
+            connection = DriverManager.getConnection(url, properties);
+			String sql = "INSERT INTO sum_ip_message (sourceIp, window, size) VALUES (?, ?, ?)";
+			statement = connection.prepareStatement(sql);
+		}
+
+		@Override
+		public void invoke(SumIpMessage value, Context context) throws Exception {
+			// Set parameters and execute update
+			statement.setString(1, value.getSourceIp());
+			statement.setString(2, value.getWindow());
+			statement.setDouble(3, value.getSize());
+			statement.executeUpdate();
+		}
+
+		@Override
+		public void close() throws Exception {
+			if (statement != null) {
+				statement.close();
+			}
+			if (connection != null) {
+				connection.close();
+			}
+		}
+	}
+
 }
+
