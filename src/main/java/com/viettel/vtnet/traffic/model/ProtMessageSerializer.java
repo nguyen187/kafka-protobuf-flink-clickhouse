@@ -1,9 +1,7 @@
-package myflink.model;
+package com.viettel.vtnet.traffic.model;
 
 import org.apache.kafka.common.serialization.Serializer;
-
-
-import myflink.message.ExchangeProtoMessage.ProtMessage;
+import com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage;
 
 public class ProtMessageSerializer implements Serializer<ProtMessage> {
     @Override

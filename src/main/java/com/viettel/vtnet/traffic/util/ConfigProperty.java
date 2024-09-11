@@ -1,4 +1,4 @@
-package myflink.util;
+package com.viettel.vtnet.traffic.util;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -27,7 +27,7 @@ public class ConfigProperty {
 
     public static final PropertiesConfiguration PROPERTIES = new PropertiesConfiguration();
     public static ConfigProperty instance;
-    public static final String KAFKA_CONFIG_FILE = "./config/kafka.properties";
+    public static final String KAFKA_CONFIG_FILE = "./conf/kafka.properties";
     private PropertiesConfiguration properties = new PropertiesConfiguration();
 
     private ConfigProperty() {
@@ -80,14 +80,15 @@ public class ConfigProperty {
         }
     }
 
-    public Map<String, Object> createKafkaInputParameterMap(){
+    public Properties createKafkaInputParameterMap(){
         LOGGER.info("Create kafka parameter map: ",KAFKA_CONFIG_FILE);
         Properties props = loadProperties(KAFKA_CONFIG_FILE);
-        Map<String, Object> parameterMap = new HashMap<String, Object>();
-        parameterMap.put("bootstrap.servers", props.getProperty(KAFKA_BROKER_LIST));
-        parameterMap.put("group.id", props.getProperty(GROUP_ID));
-        parameterMap.put("compression.type","snappy");
-        parameterMap.put("enable.auto.commit", "false");
+//        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        Properties parameterMap = new Properties();
+        parameterMap.setProperty("bootstrap.servers", props.getProperty(KAFKA_BROKER_LIST));
+        parameterMap.setProperty("group.id", props.getProperty(GROUP_ID));
+        parameterMap.setProperty("compression.type","snappy");
+        parameterMap.setProperty("enable.auto.commit", "false");
         for (Map.Entry e : props.entrySet()){
             LOGGER.info("Add kafka config ",e.getKey(),e.getValue());
             parameterMap.put((String) e.getKey(), e.getValue());

@@ -3,9 +3,7 @@
 // source: proto/MessageProtobuf.proto
 // Protobuf Java Version: 4.27.3
 
-package myflink.message;
-
-import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
+package com.viettel.vtnet.traffic.message;
 
 public final class ExchangeProtoMessage {
   private ExchangeProtoMessage() {}
@@ -275,23 +273,23 @@ public final class ExchangeProtoMessage {
       dpiIp_ = "";
     }
 
-    public ProtMessage(String id, String end  , double size  ) {
-      this.sourceIp_ = id;
-      this.timestamp_ = end;
+    public ProtMessage(String newSourceIp, String timestamp, double size) {
+      this.sourceIp_ = newSourceIp;
+      this.timestamp_ = timestamp;
       this.size_ = size;
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return myflink.message.ExchangeProtoMessage.internal_static_exchange_message_def_ProtMessage_descriptor;
+      return com.viettel.vtnet.traffic.message.ExchangeProtoMessage.internal_static_exchange_message_def_ProtMessage_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return myflink.message.ExchangeProtoMessage.internal_static_exchange_message_def_ProtMessage_fieldAccessorTable
+      return com.viettel.vtnet.traffic.message.ExchangeProtoMessage.internal_static_exchange_message_def_ProtMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              myflink.message.ExchangeProtoMessage.ProtMessage.class, myflink.message.ExchangeProtoMessage.ProtMessage.Builder.class);
+              com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage.class, com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage.Builder.class);
     }
 
     private int bitField0_;
@@ -1009,10 +1007,10 @@ public final class ExchangeProtoMessage {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof myflink.message.ExchangeProtoMessage.ProtMessage)) {
+      if (!(obj instanceof com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage)) {
         return super.equals(obj);
       }
-      myflink.message.ExchangeProtoMessage.ProtMessage other = (myflink.message.ExchangeProtoMessage.ProtMessage) obj;
+      com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage other = (com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage) obj;
 
       if (hasTimestamp() != other.hasTimestamp()) return false;
       if (hasTimestamp()) {
@@ -1149,44 +1147,44 @@ public final class ExchangeProtoMessage {
       return hash;
     }
 
-    public static myflink.message.ExchangeProtoMessage.ProtMessage parseFrom(
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static myflink.message.ExchangeProtoMessage.ProtMessage parseFrom(
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static myflink.message.ExchangeProtoMessage.ProtMessage parseFrom(
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static myflink.message.ExchangeProtoMessage.ProtMessage parseFrom(
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static myflink.message.ExchangeProtoMessage.ProtMessage parseFrom(byte[] data)
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static myflink.message.ExchangeProtoMessage.ProtMessage parseFrom(
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static myflink.message.ExchangeProtoMessage.ProtMessage parseFrom(java.io.InputStream input)
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseWithIOException(PARSER, input);
     }
-    public static myflink.message.ExchangeProtoMessage.ProtMessage parseFrom(
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1194,26 +1192,26 @@ public final class ExchangeProtoMessage {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static myflink.message.ExchangeProtoMessage.ProtMessage parseDelimitedFrom(java.io.InputStream input)
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static myflink.message.ExchangeProtoMessage.ProtMessage parseDelimitedFrom(
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static myflink.message.ExchangeProtoMessage.ProtMessage parseFrom(
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessage
           .parseWithIOException(PARSER, input);
     }
-    public static myflink.message.ExchangeProtoMessage.ProtMessage parseFrom(
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1226,7 +1224,7 @@ public final class ExchangeProtoMessage {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(myflink.message.ExchangeProtoMessage.ProtMessage prototype) {
+    public static Builder newBuilder(com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -1247,21 +1245,21 @@ public final class ExchangeProtoMessage {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:exchange_message_def.ProtMessage)
-        myflink.message.ExchangeProtoMessage.ProtMessageOrBuilder {
+        com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return myflink.message.ExchangeProtoMessage.internal_static_exchange_message_def_ProtMessage_descriptor;
+        return com.viettel.vtnet.traffic.message.ExchangeProtoMessage.internal_static_exchange_message_def_ProtMessage_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return myflink.message.ExchangeProtoMessage.internal_static_exchange_message_def_ProtMessage_fieldAccessorTable
+        return com.viettel.vtnet.traffic.message.ExchangeProtoMessage.internal_static_exchange_message_def_ProtMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                myflink.message.ExchangeProtoMessage.ProtMessage.class, myflink.message.ExchangeProtoMessage.ProtMessage.Builder.class);
+                com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage.class, com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage.Builder.class);
       }
 
-      // Construct using myflink.message.ExchangeProtoMessage.ProtMessage.newBuilder()
+      // Construct using com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage.newBuilder()
       private Builder() {
 
       }
@@ -1294,17 +1292,17 @@ public final class ExchangeProtoMessage {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return myflink.message.ExchangeProtoMessage.internal_static_exchange_message_def_ProtMessage_descriptor;
+        return com.viettel.vtnet.traffic.message.ExchangeProtoMessage.internal_static_exchange_message_def_ProtMessage_descriptor;
       }
 
       @java.lang.Override
-      public myflink.message.ExchangeProtoMessage.ProtMessage getDefaultInstanceForType() {
-        return myflink.message.ExchangeProtoMessage.ProtMessage.getDefaultInstance();
+      public com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage getDefaultInstanceForType() {
+        return com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage.getDefaultInstance();
       }
 
       @java.lang.Override
-      public myflink.message.ExchangeProtoMessage.ProtMessage build() {
-        myflink.message.ExchangeProtoMessage.ProtMessage result = buildPartial();
+      public com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage build() {
+        com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -1312,14 +1310,14 @@ public final class ExchangeProtoMessage {
       }
 
       @java.lang.Override
-      public myflink.message.ExchangeProtoMessage.ProtMessage buildPartial() {
-        myflink.message.ExchangeProtoMessage.ProtMessage result = new myflink.message.ExchangeProtoMessage.ProtMessage(this);
+      public com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage buildPartial() {
+        com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage result = new com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(myflink.message.ExchangeProtoMessage.ProtMessage result) {
+      private void buildPartial0(com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -1379,16 +1377,16 @@ public final class ExchangeProtoMessage {
 
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof myflink.message.ExchangeProtoMessage.ProtMessage) {
-          return mergeFrom((myflink.message.ExchangeProtoMessage.ProtMessage)other);
+        if (other instanceof com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage) {
+          return mergeFrom((com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(myflink.message.ExchangeProtoMessage.ProtMessage other) {
-        if (other == myflink.message.ExchangeProtoMessage.ProtMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage other) {
+        if (other == com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage.getDefaultInstance()) return this;
         if (other.hasTimestamp()) {
           timestamp_ = other.timestamp_;
           bitField0_ |= 0x00000001;
@@ -2540,12 +2538,12 @@ public final class ExchangeProtoMessage {
     }
 
     // @@protoc_insertion_point(class_scope:exchange_message_def.ProtMessage)
-    private static final myflink.message.ExchangeProtoMessage.ProtMessage DEFAULT_INSTANCE;
+    private static final com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new myflink.message.ExchangeProtoMessage.ProtMessage();
+      DEFAULT_INSTANCE = new com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage();
     }
 
-    public static myflink.message.ExchangeProtoMessage.ProtMessage getDefaultInstance() {
+    public static com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2581,7 +2579,7 @@ public final class ExchangeProtoMessage {
     }
 
     @java.lang.Override
-    public myflink.message.ExchangeProtoMessage.ProtMessage getDefaultInstanceForType() {
+    public com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2608,8 +2606,9 @@ public final class ExchangeProtoMessage {
       "ber\030\005 \002(\005\022\014\n\004imsi\030\006 \001(\t\022\016\n\006msisdn\030\007 \001(\t\022" +
       "\014\n\004teid\030\010 \001(\t\022\r\n\005cause\030\t \001(\t\022\025\n\ruser_loc" +
       "ation\030\n \001(\t\022\026\n\016bearer_context\030\013 \001(\t\022\016\n\006d" +
-      "pi_ip\030\014 \001(\t\022\014\n\004size\030\r \002(\001B)\n\017myflink.mes" +
-      "sageB\024ExchangeProtoMessageH\001"
+      "pi_ip\030\014 \001(\t\022\014\n\004size\030\r \002(\001B;\n!com.viettel" +
+      ".vtnet.traffic.messageB\024ExchangeProtoMes" +
+      "sageH\001"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

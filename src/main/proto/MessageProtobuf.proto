@@ -2,7 +2,7 @@ syntax = "proto2";
 
 package exchange_message_def;
 
-option java_package = "myflink.message";
+option java_package = "com.viettel.vtnet.traffic.message";
 option java_outer_classname = "ExchangeProtoMessage";
 option optimize_for = SPEED;
 

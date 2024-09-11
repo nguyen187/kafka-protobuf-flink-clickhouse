@@ -1,12 +1,12 @@
-package myflink.util;
+package com.viettel.vtnet.traffic.message;
 
-public class SumIpMessage {
+public class TrafficMessage {
     private String sourceIp;
     private String window;
     private Double size;
 
     // Constructor để khởi tạo các thuộc tính
-    public SumIpMessage(String sourceIp, String window, Double size) {
+    public TrafficMessage(String sourceIp, String window, Double size) {
         this.sourceIp = sourceIp;
         this.window = window;
         this.size = size;

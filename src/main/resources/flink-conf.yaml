@@ -1,0 +1,12 @@
+## State backend configuration
+#state.backend: rocksdb
+#state.checkpoints.dir: hdfs://namenode:9870/flink/checkpoint
+#state.savepoints.dir: hdfs://namenode:9870/flink/savepoints
+#
+## Checkpointing configuration
+#state.backend.incremental: true
+#execution.checkpointing.interval: 60000
+#execution.checkpointing.min-pause: 30000
+#execution.checkpointing.timeout: 600000
+#execution.checkpointing.max-concurrent-checkpoints: 1
+#execution.checkpointing.externalized-checkpoint-retention: RETAIN_ON_CANCELLATION

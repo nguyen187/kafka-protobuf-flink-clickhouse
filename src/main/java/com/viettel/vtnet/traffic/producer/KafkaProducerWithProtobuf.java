@@ -1,4 +1,4 @@
-package myflink.producer;
+package com.viettel.vtnet.traffic.producer;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -8,17 +8,15 @@ import org.apache.kafka.common.serialization.IntegerSerializer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage;
 
-
-import myflink.message.ExchangeProtoMessage.ProtMessage;
-import myflink.model.ProtMessageSerializer;
+import com.viettel.vtnet.traffic.model.ProtMessageSerializer;
 
 public class KafkaProducerWithProtobuf {
 
@@ -101,7 +99,7 @@ public class KafkaProducerWithProtobuf {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw  new RuntimeException(e);
         }
         producer.close();
     }

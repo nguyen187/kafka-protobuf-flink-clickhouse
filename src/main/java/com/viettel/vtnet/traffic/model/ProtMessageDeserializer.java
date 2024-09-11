@@ -1,15 +1,11 @@
-package myflink.model;
+package com.viettel.vtnet.traffic.model;
 
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.flink.api.common.serialization.AbstractDeserializationSchema;
-import org.apache.kafka.common.serialization.Deserializer;
-
-import com.google.protobuf.InvalidProtocolBufferException;
-import myflink.message.ExchangeProtoMessage.ProtMessage;
-import org.apache.kafka.common.serialization.Deserializer;
 
 import java.io.IOException;
+import com.viettel.vtnet.traffic.message.ExchangeProtoMessage.ProtMessage;
 
 public class ProtMessageDeserializer extends AbstractDeserializationSchema<ProtMessage> {
 //    @Override

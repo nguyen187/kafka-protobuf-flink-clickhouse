@@ -158,7 +158,14 @@ under the License.
 			<artifactId>clickhouse-jdbc</artifactId>
 			<version>0.3.2</version>
 		</dependency>
-<!--		Scala dependencies-->
+		<!-- https://mvnrepository.com/artifact/org.xolstice.maven.plugins/protobuf-maven-plugin -->
+		<dependency>
+			<groupId>org.xolstice.maven.plugins</groupId>
+			<artifactId>protobuf-maven-plugin</artifactId>
+			<version>0.6.1</version>
+		</dependency>
+
+		<!--		Scala dependencies-->
 		<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-statebackend-rocksdb -->
 		<dependency>
 			<groupId>org.apache.flink</groupId>
@@ -199,7 +206,7 @@ under the License.
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<!-- here we specify that we want to use the main method within the App class -->
-							<mainClass>myflink.StreamingJob</mainClass>
+							<mainClass>com.viettel.vtnet.traffic.StreamingJob</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -241,7 +248,7 @@ under the License.
 							</filters>
 							<transformers>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>myflink.StreamingJob</mainClass>
+									<mainClass>com.viettel.vtnet.traffic.StreamingJob</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>

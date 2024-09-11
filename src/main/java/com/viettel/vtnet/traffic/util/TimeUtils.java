@@ -1,4 +1,4 @@
-package myflink.util;
+package com.viettel.vtnet.traffic.util;
 
 import java.time.Instant;
 import java.time.ZoneId;
