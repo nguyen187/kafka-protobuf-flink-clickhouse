@@ -29,13 +29,11 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 import org.apache.flink.streaming.api.functions.windowing.WindowFunction;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.util.Collector;
-import org.apache.kafka.common.serialization.IntegerDeserializer;
 import myflink.message.ExchangeProtoMessage.ProtMessage;
 
 import java.sql.DriverManager;
@@ -47,7 +45,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
-import static org.apache.flink.api.common.eventtime.WatermarkStrategy.forBoundedOutOfOrderness;
 
 public class StreamingJob {
 
@@ -55,7 +52,7 @@ public class StreamingJob {
 
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 		env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
-		env.getConfig().setAutoWatermarkInterval(100L);
+		env.getConfig().setAutoWatermarkInterval(0);
 
         final ConfigProperty configProperty = ConfigProperty.getInstance();
 		final String brokers = configProperty.getConfigString(ConfigProperty.KAFKA_BROKER_LIST);
@@ -78,6 +75,8 @@ public class StreamingJob {
 				TimeUtils.parseTimestamp(event.getTimestamp())
 		));
 
+//		stream.print();
+
 		DataStream<SumIpMessage> sumSizeMessageIp = stream
 				.map(new MapFunction<ProtMessage,ProtMessage>() {
 					@Override
@@ -91,8 +90,9 @@ public class StreamingJob {
 				.timeWindow(Time.seconds(10))
 				.apply(new SumSizeMessage());
 
-		System.out.println(sumSizeMessageIp);
-		sumSizeMessageIp.addSink(new ClickHouseSink());
+//		System.out.println(sumSizeMessageIp);
+		sumSizeMessageIp.print();
+//		sumSizeMessageIp.addSink(new ClickHouseSink());
 		env.execute("Flink Streaming Java API Skeleton");
 	}
 	public static class SumSizeMessage implements WindowFunction<ProtMessage, SumIpMessage, String, TimeWindow> {

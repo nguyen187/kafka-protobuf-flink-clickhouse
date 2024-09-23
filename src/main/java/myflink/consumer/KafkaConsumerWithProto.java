@@ -1,20 +1,6 @@
 package myflink.consumer;
 
-import java.time.Duration;
-import java.util.Collections;
-import java.util.Properties;
-
 import myflink.message.ExchangeProtoMessage.ProtMessage;
-import myflink.model.ProtMessageDeserializer;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.IntegerDeserializer;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Properties;
 
 public class KafkaConsumerWithProto {
 
