@@ -1,18 +1,21 @@
 package myflink;
 
 import myflink.message.ExchangeProtoMessage;
+import myflink.message.SubProtMessage;
 import myflink.model.ProtMessageDeserializer;
 import myflink.source.AdaptiveWatermarkAssigner;
 import myflink.util.ConfigProperty;
 import myflink.util.SumIpMessage;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
+import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.functions.windowing.WindowFunction;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
@@ -34,7 +37,7 @@ public class StreamingJobV3 {
     public static void main(String[] args) throws Exception {
 
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-		env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
+//		env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 		env.getConfig().setAutoWatermarkInterval(0);
 
         final ConfigProperty configProperty = ConfigProperty.getInstance();
@@ -83,20 +86,27 @@ public class StreamingJobV3 {
 
         DataStream<ExchangeProtoMessage.ProtMessage> stream = env.addSource(consumer);
 
-//        stream.print();
+        stream.print();
 
         DataStream<SumIpMessage> sumSizeMessageIp = stream
-                .map(new MapFunction<ExchangeProtoMessage.ProtMessage, ExchangeProtoMessage.ProtMessage>() {
+                .map(new MapFunction<ExchangeProtoMessage.ProtMessage, SubProtMessage>() {
                     @Override
-                    public ExchangeProtoMessage.ProtMessage map(ExchangeProtoMessage.ProtMessage r) {
+                    public SubProtMessage map(ExchangeProtoMessage.ProtMessage r) throws ParseException {
                         String[] parts = r.getSourceIp().split("\\.");
                         String newSourceIp = parts[0] + "." + parts[1];
-                        return new ExchangeProtoMessage.ProtMessage(newSourceIp,r.getTimestamp(),r.getSize());
+                        System.out.println(newSourceIp);
+                        return new SubProtMessage(newSourceIp,r.getTimestamp(),r.getSize());
                     }
                 })
-                .keyBy(ExchangeProtoMessage.ProtMessage::getSourceIp)
-                .timeWindow(Time.seconds(10))
-                .apply(new StreamingJob.SumSizeMessage());
+                .keyBy(new KeySelector<SubProtMessage, String>() {
+
+                    @Override
+                    public String getKey(SubProtMessage subProtMessage) throws Exception {
+                        return subProtMessage.getSourceIp();
+                    }
+                })
+                .timeWindow(Time.milliseconds(10)).allowedLateness(Time.milliseconds(1000))
+                .process(new SumSizeMessage());
 
 //		System.out.println(sumSizeMessageIp);
         sumSizeMessageIp.print();
@@ -107,21 +117,22 @@ public class StreamingJobV3 {
 
 
 
-    public static class SumSizeMessage implements WindowFunction<ExchangeProtoMessage.ProtMessage, SumIpMessage, String, TimeWindow> {
+    public static class SumSizeMessage extends ProcessWindowFunction<SubProtMessage, SumIpMessage, String, TimeWindow> {
+
         @Override
-        public 	void apply(String Id, TimeWindow window, Iterable<ExchangeProtoMessage.ProtMessage> vals, Collector<SumIpMessage> out) {
+        public void process(String s, ProcessWindowFunction<SubProtMessage, SumIpMessage, String, TimeWindow>.Context context, Iterable<SubProtMessage> vals, Collector<SumIpMessage> out) throws Exception {
             int cnt = 0;
             double sum = 0.0;
-            for (ExchangeProtoMessage.ProtMessage r : vals) {
+            for (SubProtMessage r : vals) {
                 cnt++;
                 sum += r.getSize();
             }
-            Instant windowEndInstant = Instant.ofEpochMilli(window.getEnd());
+            Instant windowEndInstant = Instant.ofEpochMilli(context.window().getEnd());
             String windowEndTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
                     .withZone(ZoneId.systemDefault())
                     .format(windowEndInstant);
-            SumIpMessage a = new SumIpMessage(Id, windowEndTime, sum);
-            out.collect(new SumIpMessage(Id, windowEndTime, sum));
+            SumIpMessage a = new SumIpMessage(s, windowEndTime, sum);
+            out.collect(new SumIpMessage(s, windowEndTime, sum));
         }
     }
     public static class ClickHouseSink extends RichSinkFunction<SumIpMessage> {

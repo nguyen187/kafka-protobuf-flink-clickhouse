@@ -27,7 +27,7 @@ public class KafkaProducerWithProtobuf {
 
         Properties props = new Properties();
 
-        props.put("bootstrap.servers", "localhost:9092,localhost:9093,localhost:9095");
+        props.put("bootstrap.servers", "localhost:9092,localhost:9094,localhost:9095");
 
 
 

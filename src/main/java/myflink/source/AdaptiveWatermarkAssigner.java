@@ -101,7 +101,7 @@ public class AdaptiveWatermarkAssigner implements WatermarkGenerator<ExchangePro
             System.out.println("Late arrival detected for event with timestamp: " + extractedTimestamp);
             totalOOOArrival++;
         }
-        System.out.println("Total OOO Arrival "+totalOOOArrival +" of total elements "+totalElements +" with percentage "+(double)totalOOOArrival/totalElements);
+//        System.out.println("Total OOO Arrival "+totalOOOArrival +" of total elements "+totalElements +" with percentage "+(double)totalOOOArrival/totalElements);
     }
 
     @Override
