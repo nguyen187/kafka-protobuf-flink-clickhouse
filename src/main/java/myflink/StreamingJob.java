@@ -18,6 +18,7 @@
 
 package myflink;
 
+import myflink.message.SubProtMessage;
 import myflink.model.ProtMessageDeserializer;
 import myflink.util.ConfigProperty;
 
@@ -25,29 +26,29 @@ import myflink.util.SumIpMessage;
 import myflink.util.TimeUtils;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.sink.SinkFunction;
-import org.apache.flink.streaming.api.functions.windowing.WindowFunction;
+import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.util.Collector;
-import org.apache.kafka.common.serialization.IntegerDeserializer;
 import myflink.message.ExchangeProtoMessage.ProtMessage;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Connection;
+import java.text.ParseException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
-import static org.apache.flink.api.common.eventtime.WatermarkStrategy.forBoundedOutOfOrderness;
 
 public class StreamingJob {
 
@@ -78,39 +79,48 @@ public class StreamingJob {
 				TimeUtils.parseTimestamp(event.getTimestamp())
 		));
 
-		DataStream<SumIpMessage> sumSizeMessageIp = stream
-				.map(new MapFunction<ProtMessage,ProtMessage>() {
+//		stream.print();
+
+		DataStream<SubProtMessage> sumSizeMessageIp = stream
+				.map(new MapFunction<ProtMessage, SubProtMessage>() {
 					@Override
-					public ProtMessage map(ProtMessage r) {
+					public SubProtMessage map(ProtMessage r) throws ParseException {
 						String[] parts = r.getSourceIp().split("\\.");
 						String newSourceIp = parts[0] + "." + parts[1];
-						return new ProtMessage(newSourceIp,r.getTimestamp(),r.getSize());
+						return new SubProtMessage(newSourceIp,r.getTimestamp(),r.getSize());
 					}
 				})
-				.keyBy(ProtMessage::getSourceIp)
-				.timeWindow(Time.seconds(10))
-				.apply(new SumSizeMessage());
+				.keyBy(new KeySelector<SubProtMessage, String>() {
 
-		System.out.println(sumSizeMessageIp);
-		sumSizeMessageIp.addSink(new ClickHouseSink());
+					@Override
+					public String getKey(SubProtMessage subProtMessage) throws Exception {
+						return subProtMessage.getSourceIp();
+					}
+				});
+//		System.out.println(sumSizeMessageIp);
+		sumSizeMessageIp.print();
+//		sumSizeMessageIp.addSink(new ClickHouseSink());
 		env.execute("Flink Streaming Java API Skeleton");
 	}
-	public static class SumSizeMessage implements WindowFunction<ProtMessage, SumIpMessage, String, TimeWindow> {
+	public static class SumSizeMessage extends ProcessWindowFunction<SubProtMessage, SumIpMessage, String, TimeWindow> {
+
 		@Override
-		public 	void apply(String Id, TimeWindow window, Iterable<ProtMessage> vals, Collector<SumIpMessage> out) {
+		public void process(String s, Context context, Iterable<SubProtMessage> vals, Collector<SumIpMessage> out) throws Exception {
 			int cnt = 0;
+			System.out.println("hi");
 			double sum = 0.0;
-			for (ProtMessage r : vals) {
+			for (SubProtMessage r : vals) {
 				cnt++;
 				sum += r.getSize();
 			}
-			Instant windowEndInstant = Instant.ofEpochMilli(window.getEnd());
+			Instant windowEndInstant = Instant.ofEpochMilli(context.window().getEnd());
 			String windowEndTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
 					.withZone(ZoneId.systemDefault())
 					.format(windowEndInstant);
-			SumIpMessage a = new SumIpMessage(Id, windowEndTime, sum);
-            out.collect(new SumIpMessage(Id, windowEndTime, sum));
-        }
+			SumIpMessage a = new SumIpMessage(s, windowEndTime, sum);
+
+			out.collect(new SumIpMessage(s, windowEndTime, sum));
+		}
 	}
 	public static class ClickHouseSink extends RichSinkFunction<SumIpMessage> {
 		private transient Connection connection;

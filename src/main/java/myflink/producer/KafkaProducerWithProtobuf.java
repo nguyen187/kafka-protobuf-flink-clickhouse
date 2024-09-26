@@ -8,7 +8,6 @@ import org.apache.kafka.common.serialization.IntegerSerializer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -28,7 +27,7 @@ public class KafkaProducerWithProtobuf {
 
         Properties props = new Properties();
 
-        props.put("bootstrap.servers", "localhost:9092,localhost:9093,localhost:9094");
+        props.put("bootstrap.servers", "localhost:9092,localhost:9094,localhost:9095");
 
 
 

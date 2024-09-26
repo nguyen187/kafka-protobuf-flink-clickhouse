@@ -3,11 +3,8 @@ package myflink.model;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.flink.api.common.serialization.AbstractDeserializationSchema;
-import org.apache.kafka.common.serialization.Deserializer;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import myflink.message.ExchangeProtoMessage.ProtMessage;
-import org.apache.kafka.common.serialization.Deserializer;
 
 import java.io.IOException;
 

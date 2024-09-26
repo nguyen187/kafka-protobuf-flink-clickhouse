@@ -1,5 +1,5 @@
 ﻿timestamp=2024/09/06 16:18:49.000, source-ip=10.202.17.55, dest-ip=10.202.2.49, message-type=Create Session Request, sequence-number=8435, imsi=452048840010429, msisdn=84988888282,size=5,
-timestamp=2024/09/06 16:18:51.000, source-ip=10.202.17.55, dest-ip=10.202.2.49, message-type=Create Session Request, sequence-number=8435, imsi=452048840010429, msisdn=84988888282,size=5,37
+timestamp=2024/09/06 16:18:51.000, source-ip=10.202.17.55, dest-ip=10.202.2.49, message-type=Create Session Request, sequence-number=8435, imsi=452048840010429, msisdn=84988888282,size=5,
 timestamp=2024/09/06 16:18:54.000, source-ip=10.202.2.49, dest-ip=10.202.17.55, message-type=Create Session Response, sequence-number=8435, teid={769184798}, cause=Request accepted,size=6,
 timestamp=2024/09/06 16:18:56.000, source-ip=10.202.17.55, dest-ip=10.202.2.49, message-type=Delete Session Request, sequence-number=31991, teid={2858458672}, user-location=[Tai{tac=1001,size=7,
 timestamp=2024/09/06 16:18:58.000, source-ip=10.202.2.49, dest-ip=10.202.17.55, message-type=Delete Session Response, sequence-number=31991, teid={769184798}, cause=Request accepted,size=8,
